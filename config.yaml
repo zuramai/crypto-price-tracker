@@ -2,5 +2,6 @@ env: "development"
 app:
   name: string
   port: 3000
+  jwt_secret: "arstarsvionaerhstoien"
 database:
   connection_string: "sqlite://database/main.db"

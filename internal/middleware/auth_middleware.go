@@ -15,15 +15,21 @@ func NewAuth(authService *services.AuthService) fiber.Handler {
 			})
 		}
 
-		// Validate token
-		err := authService.ValidateToken(token)
-		if err != nil {
+		if len(token) < 7 || token[:7] != "Bearer " {
 			return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"message": "Unauthorized",
 			})
 		}
 
-		ctx.UserContext()
+		token = token[7:]
+
+		// Validate token
+		auth, err := authService.ValidateToken(token)
+		if err != nil {
+			return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"message": "Unauthorized",
+			})
+		}
 
 		ctx.Locals("auth", auth)
 

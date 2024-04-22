@@ -9,7 +9,7 @@ import (
 
 type AppConfig struct {
 	DB     *sql.DB
-	Logger *zap.Logger
+	Logger *zap.SugaredLogger
 	Viper  *viper.Viper
 }
 
