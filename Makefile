@@ -1,4 +1,6 @@
 watch: 
-	air -c air.toml
+	./bin/air -c .air.toml
+setup:
+	sh ./scripts/install_air.sh
 prod:
-	go build -o bin/main cmd/main.go && ./bin/main
+	go build -o temp/main bin/main cmd/main.go && ./bin/main
