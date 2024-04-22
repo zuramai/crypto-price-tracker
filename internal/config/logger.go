@@ -5,7 +5,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func NewLogger(viper *viper.Viper) *zap.Logger {
+func NewLogger(viper *viper.Viper) *zap.SugaredLogger {
 	var logger *zap.Logger
 
 	if viper.GetString("env") == "development" {
@@ -14,5 +14,5 @@ func NewLogger(viper *viper.Viper) *zap.Logger {
 		logger, _ = zap.NewProduction()
 	}
 
-	return logger
+	return logger.Sugar()
 }
