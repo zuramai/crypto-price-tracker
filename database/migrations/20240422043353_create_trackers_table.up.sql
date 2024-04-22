@@ -1,0 +1,7 @@
+CREATE TABLE trackers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    crypto_id VARCHAR(50) NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY(crypto_id) REFERENCES cryptos(id) ON DELETE CASCADE
+);
