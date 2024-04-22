@@ -1,0 +1,6 @@
+env: "development"
+app:
+  name: string
+  port: 3000
+database:
+  connection_string: "sqlite://database/main.db"
