@@ -2,16 +2,16 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/zuramai/crypto-price-tracker/internal/repository"
+	"github.com/zuramai/crypto-price-tracker/internal/services"
 )
 
 type AuthController struct {
-	userRepo *repository.UserRepository
+	userService *services.AuthService
 }
 
-func NewAuthController(userRepo *repository.UserRepository) *AuthController {
+func NewAuthController(userService *services.AuthService) *AuthController {
 	return &AuthController{
-		userRepo,
+		userService,
 	}
 }
 
