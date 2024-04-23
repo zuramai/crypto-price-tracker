@@ -38,5 +38,13 @@ func (c *TrackerController) CreateTracker(ctx *fiber.Ctx) error {
 	return utils.NewApiResponseMessage(ctx, fiber.StatusCreated, "Tracker created successfully")
 }
 func (c *TrackerController) DeleteTracker(ctx *fiber.Ctx) error {
+	trackerID, err := ctx.ParamsInt("id")
+	if err != nil {
+		return utils.NewApiResponseMessage(ctx, fiber.StatusBadRequest, "Tracker id should be number")
+	}
+	err = c.trackerService.DeleteTracker(trackerID)
+	if err != nil {
+		return utils.NewApiResponseMessage(ctx, fiber.StatusBadRequest, err.Error())
+	}
 	return utils.NewApiResponseMessage(ctx, fiber.StatusOK, "Tracker deleted successfully")
 }

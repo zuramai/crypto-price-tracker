@@ -19,6 +19,7 @@ func NewTrackerService(trackerRepo *repository.TrackerRepository, cryptoRepo *re
 var (
 	ErrTrackerAlreadyExists = errors.New("tracker already exists")
 	ErrInsertTracker        = errors.New("failed to create tracker")
+	ErrDeleteTracker        = errors.New("failed to delete tracker")
 )
 
 func (s *TrackerService) GetTrackersByUserID(userID int) ([]model.Tracker, error) {
@@ -46,6 +47,19 @@ func (s *TrackerService) CreateTracker(userID int, cryptoID string) error {
 	err = s.trackerRepo.InsertTracker(userID, cryptoID)
 	if err != nil {
 		return ErrInsertTracker
+	}
+
+	return nil
+}
+func (s *TrackerService) DeleteTracker(trackerID int) error {
+	_, err := s.trackerRepo.FindTrackerByID(trackerID)
+	if err != nil {
+		return err
+	}
+
+	err = s.trackerRepo.DeleteTracker(trackerID)
+	if err != nil {
+		return ErrDeleteTracker
 	}
 
 	return nil
