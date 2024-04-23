@@ -2,25 +2,54 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/zuramai/crypto-price-tracker/internal/model"
 	"github.com/zuramai/crypto-price-tracker/internal/services"
+	"github.com/zuramai/crypto-price-tracker/internal/utils"
 )
 
 type AuthController struct {
-	userService *services.AuthService
+	authService *services.AuthService
 }
 
-func NewAuthController(userService *services.AuthService) *AuthController {
+func NewAuthController(authService *services.AuthService) *AuthController {
 	return &AuthController{
-		userService,
+		authService,
 	}
 }
 
 func (c *AuthController) Login(ctx *fiber.Ctx) error {
-	return nil
+	request := new(model.LoginUserRequest)
+	err := ctx.BodyParser(request)
+	if err != nil {
+		return utils.NewApiResponseMessage(ctx, fiber.StatusBadRequest, "Invalid request")
+	}
+
+	token, err := c.authService.Login(request.Email, request.Password)
+	if err != nil {
+		return utils.NewApiResponseMessage(ctx, fiber.StatusUnauthorized, "Invalid credentials")
+	}
+	response := model.AuthSuccessResponse{
+		Email: request.Email,
+		Token: *token,
+	}
+	return utils.NewApiResponse(ctx, fiber.StatusOK, "Login Success", response)
 }
 
 func (c *AuthController) Register(ctx *fiber.Ctx) error {
-	return nil
+	request := new(model.LoginUserRequest)
+	err := ctx.BodyParser(request)
+	if err != nil {
+		return utils.NewApiResponseMessage(ctx, fiber.StatusBadRequest, "Invalid request")
+	}
+	token, err := c.authService.Register(request.Email, request.Password)
+	if err != nil {
+		return utils.NewApiResponseMessage(ctx, fiber.StatusUnauthorized, err.Error())
+	}
+	response := model.AuthSuccessResponse{
+		Email: request.Email,
+		Token: token,
+	}
+	return utils.NewApiResponse(ctx, fiber.StatusOK, "Register Success", response)
 }
 
 func (c *AuthController) Logout(ctx *fiber.Ctx) error {

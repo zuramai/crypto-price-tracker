@@ -17,14 +17,16 @@ type RouteConfig struct {
 func (r *RouteConfig) RegisterRoutes() {
 	r.App.Get("/", r.HomeController.Home)
 
+	api := r.App.Group("/api")
+
 	// Guest routes
-	r.App.Post("/auth/login", r.AuthController.Login)
-	r.App.Post("/auth/register", r.AuthController.Register)
+	api.Post("/auth/login", r.AuthController.Login)
+	api.Post("/auth/register", r.AuthController.Register)
 
 	// Auth Routes
-	r.App.Post("/auth/logout", r.AuthMiddleware, r.AuthController.Logout)
-	r.App.Get("/crypto", r.AuthMiddleware, r.CryptoController.GetCryptos)
-	r.App.Get("/trackers", r.AuthMiddleware, r.TrackerController.GetTrackers)
-	r.App.Post("/trackers", r.AuthMiddleware, r.TrackerController.CreateTracker)
-	r.App.Delete("/trackers/:id", r.AuthMiddleware, r.TrackerController.DeleteTracker)
+	api.Post("/auth/logout", r.AuthMiddleware, r.AuthController.Logout)
+	api.Get("/crypto", r.AuthMiddleware, r.CryptoController.GetCryptos)
+	api.Get("/trackers", r.AuthMiddleware, r.TrackerController.GetTrackers)
+	api.Post("/trackers", r.AuthMiddleware, r.TrackerController.CreateTracker)
+	api.Delete("/trackers/:id", r.AuthMiddleware, r.TrackerController.DeleteTracker)
 }

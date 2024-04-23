@@ -17,7 +17,7 @@ func main() {
 	logger := config.NewLogger(viper)
 	db := config.NewDatabase(viper, logger)
 
-	userRepo := repository.NewUserRepository(db)
+	userRepo := repository.NewUserRepository(db, logger)
 	trackerRepo := repository.NewTrackerRepository(db)
 	// cryptoRepo := repository.NewCryptoRepository(db)
 
