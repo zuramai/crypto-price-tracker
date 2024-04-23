@@ -41,6 +41,13 @@ func (c *AuthController) Register(ctx *fiber.Ctx) error {
 	if err != nil {
 		return utils.NewApiResponseMessage(ctx, fiber.StatusBadRequest, "Invalid request")
 	}
+
+	// Check password confirmation
+	if request.Password != request.PasswordConfirmation {
+		return utils.NewApiResponseMessage(ctx, fiber.StatusUnprocessableEntity, "Password confirmation doesn't match")
+
+	}
+
 	token, err := c.authService.Register(request.Email, request.Password)
 	if err != nil {
 		return utils.NewApiResponseMessage(ctx, fiber.StatusUnauthorized, err.Error())
