@@ -23,7 +23,7 @@ func (repo *CryptoRepository) FindAll() []*model.Crypto {
 }
 func (repo *CryptoRepository) UpdateCryptos(cryptos []model.Crypto) error {
 	var query string
-	for i, el := range cryptos {
+	for _, el := range cryptos {
 		query += fmt.Sprintf(
 			`INSERT OR REPLACE INTO cryptos (
 				id,

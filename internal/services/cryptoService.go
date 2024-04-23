@@ -46,7 +46,7 @@ func (s *CryptoService) fetchCryptos() []model.Crypto {
 
 func (s *CryptoService) FetchCryptoContinuous() {
 	for {
-		time.Sleep(5 * time.Second)
+		time.Sleep(1 * time.Minute)
 		s.logger.Debugf("Fetching crypto data...")
 		cryptos := s.fetchCryptos()
 		err := s.cryptoRepo.UpdateCryptos(cryptos)
