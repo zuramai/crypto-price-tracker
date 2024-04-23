@@ -53,5 +53,8 @@ func (c *AuthController) Register(ctx *fiber.Ctx) error {
 }
 
 func (c *AuthController) Logout(ctx *fiber.Ctx) error {
+
+	ctx.Locals("auth")
+	// invalidate token
 	return nil
 }

@@ -8,6 +8,7 @@ import (
 func NewFiber(config *viper.Viper) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName: config.GetString("app.name"),
+		// Prefork: true,
 	})
 
 	return app

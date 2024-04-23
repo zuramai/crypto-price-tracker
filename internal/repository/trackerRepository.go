@@ -1,11 +1,16 @@
 package repository
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"go.uber.org/zap"
+)
 
 type TrackerRepository struct {
-	db *sql.DB
+	db     *sql.DB
+	logger *zap.SugaredLogger
 }
 
-func NewTrackerRepository(db *sql.DB) *TrackerRepository {
-	return &TrackerRepository{db}
+func NewTrackerRepository(db *sql.DB, logger *zap.SugaredLogger) *TrackerRepository {
+	return &TrackerRepository{db, logger}
 }

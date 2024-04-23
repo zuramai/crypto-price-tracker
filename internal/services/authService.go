@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
 	"github.com/zuramai/crypto-price-tracker/internal/model"
@@ -20,6 +22,10 @@ func NewAuthService(userRepo *repository.UserRepository, logger *zap.SugaredLogg
 	return &AuthService{userRepo, logger, viper}
 }
 
+var (
+	ErrInvalidToken = errors.New("invalid token")
+)
+
 func (s *AuthService) ValidateToken(token string) (*model.User, error) {
 	var user *model.User
 
@@ -31,9 +37,13 @@ func (s *AuthService) ValidateToken(token string) (*model.User, error) {
 		return nil, err
 	}
 
-	claims := t.Claims.(*utils.JWTClaims)
+	claims, ok := t.Claims.(jwt.MapClaims)
 
-	user, err = s.userRepo.FindUserByEmail(claims.Email)
+	if !ok || !t.Valid {
+		return nil, ErrInvalidToken
+	}
+
+	user, err = s.userRepo.FindUserByEmail(claims["email"].(string))
 
 	if err != nil {
 		return nil, err

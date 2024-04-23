@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/zuramai/crypto-price-tracker/internal/config"
 	"github.com/zuramai/crypto-price-tracker/internal/controller"
 	"github.com/zuramai/crypto-price-tracker/internal/middleware"
@@ -18,10 +19,11 @@ func main() {
 	db := config.NewDatabase(viper, logger)
 
 	userRepo := repository.NewUserRepository(db, logger)
-	trackerRepo := repository.NewTrackerRepository(db)
-	// cryptoRepo := repository.NewCryptoRepository(db)
+	trackerRepo := repository.NewTrackerRepository(db, logger)
+	cryptoRepo := repository.NewCryptoRepository(db, logger)
 
 	authService := services.NewAuthService(userRepo, logger, viper)
+	cryptoService := services.NewCryptoService(cryptoRepo, logger)
 	trackerService := services.NewTrackerService(trackerRepo, userRepo)
 
 	authController := controller.NewAuthController(authService)
@@ -39,6 +41,11 @@ func main() {
 	}
 
 	router.RegisterRoutes()
+
+	if !fiber.IsChild() {
+		// To update the crypto price every 5 seconds asynchronously
+		go cryptoService.FetchCryptoContinuous()
+	}
 
 	port := viper.GetString("app.port")
 	logger.Infof("App running at port %v", port)
