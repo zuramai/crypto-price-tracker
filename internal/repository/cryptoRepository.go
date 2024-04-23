@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/zuramai/crypto-price-tracker/internal/model"
@@ -17,9 +18,36 @@ func NewCryptoRepository(db *sql.DB, logger *zap.SugaredLogger) *CryptoRepositor
 	return &CryptoRepository{db, logger}
 }
 
+var (
+	ErrQueryCrypto    = errors.New("error query crypto")
+	ErrCryptoNotFound = errors.New("crypto not found")
+)
+
 func (repo *CryptoRepository) FindAll() []*model.Crypto {
 	var result []*model.Crypto
 	return result
+}
+
+func (repo *CryptoRepository) FindCryptoByID(id string) (*model.Crypto, error) {
+	var result model.Crypto
+	rows := repo.db.QueryRow("SELECT * FROM cryptos WHERE id = $1", id)
+	if rows.Err() != nil {
+		if rows.Err() == sql.ErrNoRows {
+			return nil, ErrCryptoNotFound
+		}
+		repo.logger.Errorf("error query crypto: %v", rows.Err())
+		return nil, rows.Err()
+	}
+	err := rows.Scan(&result.ID, &result.Rank, &result.Symbol, &result.Name, &result.Supply, &result.MaxSupply, &result.MarketCapUSD, &result.VolumeUsd24Hr, &result.PriceUSD, &result.ChangePercent24Hr, &result.Vwap24Hr)
+
+	if err != nil {
+		repo.logger.Errorf("error scan crypto: %v", err)
+		if err == sql.ErrNoRows {
+			return nil, ErrCryptoNotFound
+		}
+		return nil, ErrQueryCrypto
+	}
+	return &result, nil
 }
 func (repo *CryptoRepository) UpdateCryptos(cryptos []model.Crypto) error {
 	var query string
