@@ -25,12 +25,20 @@ var (
 
 func (repo *TrackerRepository) GetTrackersByUserID(userID int) ([]model.Tracker, error) {
 	var trackers []model.Tracker
-	rows, err := repo.db.Query("SELECT * FROM trackers WHERE user_id = $1", userID)
+	rows, err := repo.db.Query("SELECT * FROM trackers JOIN cryptos ON cryptos.id = trackers.crypto_id  WHERE user_id = $1 ", userID)
 	if err != nil {
 		repo.logger.Errorf("error query trackers: %v", err)
 		return nil, ErrQueryTracker
 	}
-	rows.Scan(&trackers)
+	for rows.Next() {
+		var tracker model.Tracker
+		err := rows.Scan(&tracker.ID, &tracker.UserID, &tracker.CryptoID, &tracker.Crypto.ID, &tracker.Crypto.Rank, &tracker.Crypto.Symbol, &tracker.Crypto.Name, &tracker.Crypto.Supply, &tracker.Crypto.MaxSupply, &tracker.Crypto.MarketCapUSD, &tracker.Crypto.VolumeUsd24Hr, &tracker.Crypto.PriceUSD, &tracker.Crypto.ChangePercent24Hr, &tracker.Crypto.Vwap24Hr)
+		if err != nil {
+			repo.logger.Errorf("error scan trackers: %v", err)
+			return nil, ErrQueryTracker
+		}
+		trackers = append(trackers, tracker)
+	}
 	if err != nil {
 		repo.logger.Errorf("error scan trackers: %v", err)
 		return nil, ErrQueryTracker
@@ -40,7 +48,7 @@ func (repo *TrackerRepository) GetTrackersByUserID(userID int) ([]model.Tracker,
 
 func (repo *TrackerRepository) FindTracker(userID int, cryptoID string) (*model.Tracker, error) {
 	var tracker model.Tracker
-	rows := repo.db.QueryRow("SELECT * FROM trackers WHERE user_id = $1", userID)
+	rows := repo.db.QueryRow("SELECT * FROM trackers WHERE user_id = $1 AND crypto_id = $2", userID, cryptoID)
 	if rows.Err() != nil {
 		if rows.Err() == sql.ErrNoRows {
 			return nil, ErrTrackerNotFound
@@ -51,7 +59,6 @@ func (repo *TrackerRepository) FindTracker(userID int, cryptoID string) (*model.
 	err := rows.Scan(&tracker.ID, &tracker.UserID, &tracker.CryptoID)
 
 	if err != nil {
-		repo.logger.Errorf("error scan trackers: %v", err)
 		if err == sql.ErrNoRows {
 			return nil, ErrTrackerNotFound
 		}

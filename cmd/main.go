@@ -24,7 +24,7 @@ func main() {
 
 	authService := services.NewAuthService(userRepo, logger, viper)
 	cryptoService := services.NewCryptoService(cryptoRepo, logger)
-	trackerService := services.NewTrackerService(trackerRepo, userRepo)
+	trackerService := services.NewTrackerService(trackerRepo, cryptoRepo)
 
 	authController := controller.NewAuthController(authService)
 	trackerController := controller.NewTrackerController(trackerService)
