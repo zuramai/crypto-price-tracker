@@ -31,6 +31,7 @@ func NewAuth(authService *services.AuthService) fiber.Handler {
 			})
 		}
 
+		ctx.Locals("token", token)
 		ctx.Locals("auth", auth)
 
 		return ctx.Next()

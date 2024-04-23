@@ -45,6 +45,10 @@ func (s *AuthService) ValidateToken(token string) (*model.User, error) {
 
 	user, err = s.userRepo.FindUserByEmail(claims["email"].(string))
 
+	if user.Token.String != token {
+		return nil, ErrInvalidToken
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -69,24 +73,45 @@ func (s *AuthService) Login(email string, password string) (*string, error) {
 		return nil, err
 	}
 
+	// Update token in database
+	err = s.userRepo.UpdateToken(email, token)
+	if err != nil {
+		return nil, err
+	}
+
 	return &token, nil
 }
 
-func (s *AuthService) Register(email string, password string) (string, error) {
+func (s *AuthService) Register(email string, password string) (*string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	err = s.userRepo.CreateUser(email, string(hashedPassword[:]))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	// Generate token
 	token, err := utils.GenerateToken(email, s.viper.GetString("app.jwt_secret"))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return token, nil
+	// Update token in database
+	err = s.userRepo.UpdateToken(email, token)
+	if err != nil {
+		return nil, err
+	}
+
+	return &token, nil
+}
+
+func (s *AuthService) Logout(token string) error {
+	// Invalidate token
+	err := s.userRepo.RemoveToken(token)
+	if err != nil {
+		return err
+	}
+	return nil
 }

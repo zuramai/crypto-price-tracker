@@ -54,14 +54,18 @@ func (c *AuthController) Register(ctx *fiber.Ctx) error {
 	}
 	response := model.AuthSuccessResponse{
 		Email: request.Email,
-		Token: token,
+		Token: *token,
 	}
 	return utils.NewApiResponse(ctx, fiber.StatusOK, "Register Success", response)
 }
 
 func (c *AuthController) Logout(ctx *fiber.Ctx) error {
+	token := ctx.Locals("token").(string)
+	err := c.authService.Logout(token)
+	if err != nil {
+		return utils.NewApiResponseMessage(ctx, fiber.StatusInternalServerError, "Failed to logout")
+	}
 
-	ctx.Locals("auth")
 	// invalidate token
-	return nil
+	return utils.NewApiResponseMessage(ctx, fiber.StatusOK, "Logout Success")
 }
