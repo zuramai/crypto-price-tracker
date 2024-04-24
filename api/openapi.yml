@@ -1,0 +1,505 @@
+openapi: 3.0.3
+info:
+  title: Crypto Price Tracker
+  version: 1.0.0
+  contact: {}
+servers:
+- url: '{{BASE_URL}}'
+paths:
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Login
+      description: Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@gmail.com
+                password:
+                  type: string
+                  example: test12322
+            examples:
+              Login:
+                value:
+                  email: test@gmail.com
+                  password: test12322
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '211'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:12:03 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: test@gmail.com
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM5NDI3MjQsImVtYWlsIjoidGVzdEBnbWFpbC5jb20ifQ.RMhvnGl40ndtHVJmqTpnyqK3xnqwrMckRPC-R76EgR4
+                  message:
+                    type: string
+                    example: Login Success
+              examples:
+                Success:
+                  value:
+                    data:
+                      email: test@gmail.com
+                      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM5NDI3MjQsImVtYWlsIjoidGVzdEBnbWFpbC5jb20ifQ.RMhvnGl40ndtHVJmqTpnyqK3xnqwrMckRPC-R76EgR4
+                    message: Login Success
+        '401':
+          description: Login Failed
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '33'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:29:05 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid credentials
+              examples:
+                Login Failed:
+                  value:
+                    message: Invalid credentials
+  /auth/logout:
+    post:
+      tags:
+      - Auth
+      summary: Logout
+      description: Logout
+      operationId: logout
+      responses:
+        '200':
+          description: Logout Success
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '28'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:29:16 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout Success
+              examples:
+                Logout Success:
+                  value:
+                    message: Logout Success
+        '401':
+          description: Logout Failed
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '26'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:29:31 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+              examples:
+                Logout Failed:
+                  value:
+                    message: Unauthorized
+      security:
+      - bearerAuth: []
+  /auth/register:
+    post:
+      tags:
+      - Auth
+      summary: Register
+      description: Register
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test2@gmail.com
+                password:
+                  type: string
+                  example: test123
+                password_confirmation:
+                  type: string
+                  example: test1234
+            examples:
+              Register:
+                value:
+                  email: test2@gmail.com
+                  password: test123
+                  password_confirmation: test1234
+      responses:
+        '200':
+          description: Register Success
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '216'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:29:53 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: test2@gmail.com
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM5NDM3OTMsImVtYWlsIjoidGVzdDJAZ21haWwuY29tIn0.3d_uLLyxY0XxRTillT05MfpotbB-rZtrOhRYlzLvodo
+                  message:
+                    type: string
+                    example: Register Success
+              examples:
+                Register Success:
+                  value:
+                    data:
+                      email: test2@gmail.com
+                      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTM5NDM3OTMsImVtYWlsIjoidGVzdDJAZ21haWwuY29tIn0.3d_uLLyxY0XxRTillT05MfpotbB-rZtrOhRYlzLvodo
+                    message: Register Success
+        '401':
+          description: User Already Exists
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '33'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:29:39 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: user already exists
+              examples:
+                User Already Exists:
+                  value:
+                    message: user already exists
+        '422':
+          description: Password Confirmation Doesnt Match
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '49'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:30:16 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password confirmation doesn't match
+              examples:
+                Password Confirmation Doesnt Match:
+                  value:
+                    message: Password confirmation doesn't match
+  /trackers:
+    get:
+      tags:
+      - Coin Tracker
+      summary: Get User Trackers
+      description: Get User Trackers
+      operationId: getUserTrackers
+      responses:
+        '200':
+          description: Get User Trackers
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '441'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:30:51 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        crypto:
+                          type: object
+                          properties:
+                            changePercent24Hr:
+                              type: string
+                              example: '-0.0035580382870680'
+                            id:
+                              type: string
+                              example: bitcoin
+                            marketCapUsd:
+                              type: string
+                              example: '1312372125901.8548993038398450'
+                            maxSupply:
+                              type: string
+                              example: '21000000.0000000000000000'
+                            name:
+                              type: string
+                              example: Bitcoin
+                            priceUsd:
+                              type: string
+                              example: '66666.0126869201186798'
+                            rank:
+                              type: string
+                              example: '1'
+                            supply:
+                              type: string
+                              example: '19685775.0000000000000000'
+                            symbol:
+                              type: string
+                              example: BTC
+                            volumeUsd24Hr:
+                              type: string
+                              example: '6317495568.7914232670451685'
+                            vwap24Hr:
+                              type: string
+                              example: '66564.6684711689605679'
+                        crypto_id:
+                          type: string
+                          example: bitcoin
+                        id:
+                          type: number
+                          example: 2
+                        user_id:
+                          type: number
+                          example: 15
+                    example:
+                    - crypto:
+                        changePercent24Hr: '-0.0035580382870680'
+                        id: bitcoin
+                        marketCapUsd: '1312372125901.8548993038398450'
+                        maxSupply: '21000000.0000000000000000'
+                        name: Bitcoin
+                        priceUsd: '66666.0126869201186798'
+                        rank: '1'
+                        supply: '19685775.0000000000000000'
+                        symbol: BTC
+                        volumeUsd24Hr: '6317495568.7914232670451685'
+                        vwap24Hr: '66564.6684711689605679'
+                      crypto_id: bitcoin
+                      id: 2
+                      user_id: 15
+                  message:
+                    type: string
+                    example: Success get trackers
+              examples:
+                Get User Trackers:
+                  value:
+                    data:
+                    - crypto:
+                        changePercent24Hr: '-0.0035580382870680'
+                        id: bitcoin
+                        marketCapUsd: '1312372125901.8548993038398450'
+                        maxSupply: '21000000.0000000000000000'
+                        name: Bitcoin
+                        priceUsd: '66666.0126869201186798'
+                        rank: '1'
+                        supply: '19685775.0000000000000000'
+                        symbol: BTC
+                        volumeUsd24Hr: '6317495568.7914232670451685'
+                        vwap24Hr: '66564.6684711689605679'
+                      crypto_id: bitcoin
+                      id: 2
+                      user_id: 15
+                    message: Success get trackers
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Coin Tracker
+      summary: Create Tracker
+      description: Create Tracker
+      operationId: createTracker
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                crypto_id:
+                  type: string
+                  example: bitcoin
+            examples:
+              Create Tracker:
+                value:
+                  crypto_id: bitcoin
+      responses:
+        '201':
+          description: Create Tracker Success
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '42'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:30:34 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tracker created successfully
+              examples:
+                Create Tracker Success:
+                  value:
+                    message: Tracker created successfully
+        '400':
+          description: Tracker Already Exists
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '36'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:30:45 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: tracker already exists
+              examples:
+                Tracker Already Exists:
+                  value:
+                    message: tracker already exists
+      security:
+      - bearerAuth: []
+  /trackers/1:
+    delete:
+      tags:
+      - Coin Tracker
+      summary: Delete Tracker
+      description: Delete Tracker
+      operationId: deleteTracker
+      responses:
+        '200':
+          description: Delete Success
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '42'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:31:15 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tracker deleted successfully
+              examples:
+                Delete Success:
+                  value:
+                    message: Tracker deleted successfully
+        '400':
+          description: Tracker Not Found
+          headers:
+            Content-Length:
+              schema:
+                type: string
+                example: '31'
+            Date:
+              schema:
+                type: string
+                example: Wed, 24 Apr 2024 06:30:58 GMT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: tracker not found
+              examples:
+                Tracker Not Found:
+                  value:
+                    message: tracker not found
+      security:
+      - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+- name: Auth
+- name: Coin Tracker
+
