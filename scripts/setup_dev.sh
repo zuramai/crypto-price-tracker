@@ -1,2 +1,2 @@
-sh ./install_air.sh
-sh ./install_migrate.sh
+sh ./scripts/install_air.sh
+sh ./scripts/install_migrate.sh
