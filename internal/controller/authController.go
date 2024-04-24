@@ -63,7 +63,7 @@ func (c *AuthController) Logout(ctx *fiber.Ctx) error {
 	token := ctx.Locals("token").(string)
 	err := c.authService.Logout(token)
 	if err != nil {
-		return utils.NewApiResponseMessage(ctx, fiber.StatusInternalServerError, "Failed to logout")
+		return utils.NewApiResponseMessage(ctx, fiber.StatusInternalServerError, "Logout Failed")
 	}
 
 	// invalidate token
